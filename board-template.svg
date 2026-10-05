@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1500" height="1500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>Don't worry</title>
+	<desc>Don't worry</desc>
+
+	<defs>
+		<circle id="cw" cx="0" cy="0" r="38" fill="white" stroke="black" stroke-width="7" />
+		<circle id="cy" cx="0" cy="0" r="38" fill="yellow" stroke="black" stroke-width="7" />
+		<circle id="cg" cx="0" cy="0" r="38" fill="green" stroke="black" stroke-width="7" />
+		<circle id="cr" cx="0" cy="0" r="38" fill="red" stroke="black" stroke-width="7" />
+		<circle id="cb" cx="0" cy="0" r="38" fill="black" stroke="black" stroke-width="7" />
+		<circle id="cbl" cx="0" cy="0" r="38" fill="#0090ff" stroke="black" stroke-width="7" />
+		<circle id="cp" cx="0" cy="0" r="38" fill="#b000b0" stroke="black" stroke-width="7" />
+		<circle id="csy" cx="0" cy="0" r="34" fill="yellow" stroke="black" stroke-width="7" />
+		<circle id="csg" cx="0" cy="0" r="34" fill="green" stroke="black" stroke-width="7" />
+		<circle id="csr" cx="0" cy="0" r="34" fill="red" stroke="black" stroke-width="7" />
+		<circle id="csb" cx="0" cy="0" r="34" fill="black" stroke="black" stroke-width="7" />
+		<circle id="csbl" cx="0" cy="0" r="34" fill="#0090ff" stroke="black" stroke-width="7" />
+		<circle id="csp" cx="0" cy="0" r="34" fill="#b000b0" stroke="black" stroke-width="7" />
+		<line id="lh" x1="0" y1="0" x2="16" y2="0" stroke="black" stroke-width="7" />
+		<line id="lv" x1="0" y1="0" x2="0" y2="16" stroke="black" stroke-width="7" />
+		<line id="lru" x1="0" y1="0" x2="14" y2="8" stroke="black" stroke-width="7" />
+		<line id="lro" x1="0" y1="0" x2="14" y2="-8" stroke="black" stroke-width="7" />
+		<line id="llu" x1="0" y1="0" x2="-14" y2="8" stroke="black" stroke-width="7" />
+		<line id="llo" x1="0" y1="0" x2="-14" y2="-8" stroke="black" stroke-width="7" />
+		<line id="lru2" x1="0" y1="0" x2="8" y2="14" stroke="black" stroke-width="7" />
+		<line id="lro2" x1="0" y1="0" x2="8" y2="-14" stroke="black" stroke-width="7" />
+		<line id="llu2" x1="0" y1="0" x2="-8" y2="14" stroke="black" stroke-width="7" />
+		<line id="llo2" x1="0" y1="0" x2="-8" y2="-14" stroke="black" stroke-width="7" />
+
+		<symbol id="arrow">
+			<desc>arrow</desc>
+			<line x1="750" y1="750" x2="872" y2="750" stroke="black" stroke-width="2" />
+			<line x1="750" y1="750" x2="742" y2="742" stroke="black" stroke-width="2" />
+			<line x1="750" y1="750" x2="742" y2="758" stroke="black" stroke-width="2" />
+			<line x1="755" y1="750" x2="747" y2="742" stroke="black" stroke-width="2" />
+			<line x1="755" y1="750" x2="747" y2="758" stroke="black" stroke-width="2" />
+			<line x1="760" y1="750" x2="752" y2="742" stroke="black" stroke-width="2" />
+			<line x1="760" y1="750" x2="752" y2="758" stroke="black" stroke-width="2" />
+			<line x1="765" y1="750" x2="757" y2="742" stroke="black" stroke-width="2" />
+			<line x1="765" y1="750" x2="757" y2="758" stroke="black" stroke-width="2" />
+			<line x1="770" y1="750" x2="762" y2="742" stroke="black" stroke-width="2" />
+			<line x1="770" y1="750" x2="762" y2="758" stroke="black" stroke-width="2" />
+			<path d="M 875,750 A 70 20 0 0 1 852,742 l 8,8" />
+			<path d="M 875,750 A 70 20 0 0 0 852,758 l 8,-8" />
+		</symbol>
+
+		<symbol id="ya">
+			<desc>yellow A</desc>
+			<path d="M 726,774 l 14,-50 l 20,0 l 14,50 l -8,0 l -5,-16 l -22,0 l -5,16 l -8,0" />
+			<path d="M 742,750 l 18,0 l -7,-20 l -6,0 l -7,20" fill="yellow" />
+		</symbol>
+
+		<symbol id="ra">
+			<desc>red A</desc>
+			<path d="M 726,774 l 14,-50 l 20,0 l 14,50 l -8,0 l -5,-16 l -22,0 l -5,16 l -8,0" />
+			<path d="M 742,750 l 18,0 l -7,-20 l -6,0 l -7,20" fill="red" />
+		</symbol>
+
+		<symbol id="ga">
+			<desc>green A</desc>
+			<path d="M 726,774 l 14,-50 l 20,0 l 14,50 l -8,0 l -5,-16 l -22,0 l -5,16 l -8,0" />
+			<path d="M 742,750 l 18,0 l -7,-20 l -6,0 l -7,20" fill="green" />
+		</symbol>
+
+		<symbol id="ba">
+			<desc>black A</desc>
+			<path d="M 726,774 l 14,-50 l 20,0 l 14,50 l -8,0 l -5,-16 l -22,0 l -5,16 l -8,0" fill="white" />
+			<path d="M 742,750 l 18,0 l -7,-20 l -6,0 l -7,20" fill="black" />
+		</symbol>
+
+		<symbol id="bla">
+			<desc>blue A</desc>
+			<path d="M 726,774 l 14,-50 l 20,0 l 14,50 l -8,0 l -5,-16 l -22,0 l -5,16 l -8,0" />
+			<path d="M 742,750 l 18,0 l -7,-20 l -6,0 l -7,20" fill="#0090ff" />
+		</symbol>
+
+		<symbol id="pa">
+			<desc>purple A</desc>
+			<path d="M 726,774 l 14,-50 l 20,0 l 14,50 l -8,0 l -5,-16 l -22,0 l -5,16 l -8,0" />
+			<path d="M 742,750 l 18,0 l -7,-20 l -6,0 l -7,20" fill="#b000b0" />
+		</symbol>
+
+		<symbol id="bb">
+			<desc>black B</desc>
+			<path d="M 740,770 l 0,-40 l 8,0 A 12,12 0 0 1 750,754 l 0,-8 A 12,12 0 0 1 750,770 l -8,0" />
+			<path d="M 747,763 l 0,-9 l 1,0 A 6,4.5 0 0 1 748,763 l -1,0" fill="#ffff80" />
+			<path d="M 747,746 l 0,-9 l 1,0 A 6,4.5 0 0 1 748,746 l -1,0" fill="#ffff80" />
+		</symbol>
+
+	</defs>
+
+	<rect x="0" y="0" width="1500" height="1500" fill="#ffff80" stroke="red" stroke-width="35" />
+
+	<rect x="43" y="43" width="1407" height="1407" fill="none" stroke="black" stroke-width="7" />
+	
+	<use x="658" y="222" xlink:href="#cw" />
+	<use x="696" y="222" xlink:href="#lh" />
+	<use x="750" y="222" xlink:href="#cw" />
+	<use x="788" y="222" xlink:href="#lh" />
+	<use x="842" y="222" xlink:href="#cr" />
+
+	<use x="658" y="260" xlink:href="#lv" />
+	<use x="842" y="260" xlink:href="#lv" />
+	<use x="658" y="314" xlink:href="#cw" />
+	<use x="842" y="314" xlink:href="#cw" />
+
+	<use x="658" y="352" xlink:href="#lv" />
+	<use x="842" y="352" xlink:href="#lv" />
+	<use x="658" y="406" xlink:href="#cw" />
+	<use x="842" y="406" xlink:href="#cw" />
+
+	<use x="622" y="427" xlink:href="#llu" />
+	<use x="878" y="427" xlink:href="#lru" />
+	<use x="578" y="452" xlink:href="#cw" />
+	<use x="922" y="452" xlink:href="#cw" />
+
+	<use x="542" y="473" xlink:href="#llu" />
+	<use x="958" y="473" xlink:href="#lru" />
+	<use x="498" y="498" xlink:href="#cw" />
+	<use x="1002" y="498" xlink:href="#cw" />
+
+	<use x="1038" y="477" xlink:href="#lro" />
+	<use x="462" y="477" xlink:href="#llo" />
+	<use x="418" y="452" xlink:href="#cw" />
+	<use x="1082" y="452" xlink:href="#cw" />
+
+	<use x="382" y="431" xlink:href="#llo" />
+	<use x="1118" y="431" xlink:href="#lro" />
+	<use x="338" y="406" xlink:href="#cbl" />
+	<use x="1162" y="406" xlink:href="#cw" />
+
+	<use x="317" y="442" xlink:href="#llu2" />
+	<use x="1183" y="442" xlink:href="#lru2" />
+	<use x="292" y="486" xlink:href="#cw" />
+	<use x="1208" y="486" xlink:href="#cw" />
+
+	<use x="271" y="522" xlink:href="#llu2" />
+	<use x="1229" y="522" xlink:href="#lru2" />
+	<use x="246" y="566" xlink:href="#cw" />
+	<use x="1254" y="566" xlink:href="#cg" />
+	
+	<use x="282" y="587" xlink:href="#lru" />
+	<use x="1218" y="587" xlink:href="#llu" />
+	<use x="326" y="612" xlink:href="#cw" />
+	<use x="1174" y="612" xlink:href="#cw" />
+
+	<use x="362" y="633" xlink:href="#lru" />
+	<use x="1138" y="633" xlink:href="#llu" />
+	<use x="406" y="658" xlink:href="#cw" />
+	<use x="1094" y="658" xlink:href="#cw" />
+
+	<use x="406" y="696" xlink:href="#lv" />
+	<use x="1094" y="696" xlink:href="#lv" />
+	<use x="406" y="750" xlink:href="#cw" />
+	<use x="1094" y="750" xlink:href="#cw" />
+
+	<use x="406" y="788" xlink:href="#lv" />
+	<use x="1094" y="788" xlink:href="#lv" />
+	<use x="406" y="842" xlink:href="#cw" />
+	<use x="1094" y="842" xlink:href="#cw" />
+
+	<use x="370" y="863" xlink:href="#llu" />
+	<use x="1130" y="863" xlink:href="#lru" />
+	<use x="326" y="888" xlink:href="#cw" />
+	<use x="1174" y="888" xlink:href="#cw" />
+
+	<use x="290" y="909" xlink:href="#llu" />
+	<use x="1210" y="909" xlink:href="#lru" />
+	<use x="246" y="934" xlink:href="#cb" />
+	<use x="1254" y="934" xlink:href="#cw" />
+
+	<use x="267" y="970" xlink:href="#lru2" />
+	<use x="1233" y="970" xlink:href="#llu2" />
+	<use x="292" y="1014" xlink:href="#cw" />
+	<use x="1208" y="1014" xlink:href="#cw" />
+
+	<use x="313" y="1050" xlink:href="#lru2" />
+	<use x="1187" y="1050" xlink:href="#llu2" />
+	<use x="338" y="1094" xlink:href="#cw" />
+	<use x="1162" y="1094" xlink:href="#cp" />
+
+	<use x="372" y="1073" xlink:href="#lro" />
+	<use x="1126" y="1073" xlink:href="#llo" />
+	<use x="418" y="1048" xlink:href="#cw" />
+	<use x="1082" y="1048" xlink:href="#cw" />
+
+	<use x="452" y="1027" xlink:href="#lro" />
+	<use x="1046" y="1027" xlink:href="#llo" />
+	<use x="498" y="1002" xlink:href="#cw" />
+	<use x="1002" y="1002" xlink:href="#cw" />
+
+	<use x="532" y="1023" xlink:href="#lru" />
+	<use x="966" y="1023" xlink:href="#llu" />
+	<use x="578" y="1048" xlink:href="#cw" />
+	<use x="922" y="1048" xlink:href="#cw" />
+
+	<use x="612" y="1069" xlink:href="#lru" />
+	<use x="886" y="1069" xlink:href="#llu" />
+	<use x="658" y="1094" xlink:href="#cw" />
+	<use x="842" y="1094" xlink:href="#cw" />
+
+	<use x="658" y="1132" xlink:href="#lv" />
+	<use x="842" y="1132" xlink:href="#lv" />
+	<use x="658" y="1186" xlink:href="#cw" />
+	<use x="842" y="1186" xlink:href="#cw" />
+
+	<use x="658" y="1224" xlink:href="#lv" />
+	<use x="842" y="1224" xlink:href="#lv" />
+	<use x="658" y="1278" xlink:href="#cy" />
+	<use x="842" y="1278" xlink:href="#cw" />
+
+	<use x="696" y="1278" xlink:href="#lh" />
+	<use x="788" y="1278" xlink:href="#lh" />
+	<use x="750" y="1278" xlink:href="#cw" />
+
+	<use x="750" y="1186" xlink:href="#csy" />
+	<use x="750" y="1106" xlink:href="#csy" />
+	<use x="750" y="1026" xlink:href="#csy" />
+	<use x="750" y="946" xlink:href="#csy" />
+
+	<use x="750" y="554" xlink:href="#csr" />
+	<use x="750" y="474" xlink:href="#csr" />
+	<use x="750" y="394" xlink:href="#csr" />
+	<use x="750" y="314" xlink:href="#csr" />
+
+	<use x="372" y="532" xlink:href="#csbl" />
+	<use x="441" y="572" xlink:href="#csbl" />
+	<use x="510" y="612" xlink:href="#csbl" />
+	<use x="579" y="652" xlink:href="#csbl" />
+
+	<use x="372" y="968" xlink:href="#csb" />
+	<use x="441" y="928" xlink:href="#csb" />
+	<use x="510" y="888" xlink:href="#csb" />
+	<use x="579" y="848" xlink:href="#csb" />
+
+	<use x="1128" y="968" xlink:href="#csp" />
+	<use x="1059" y="928" xlink:href="#csp" />
+	<use x="990" y="888" xlink:href="#csp" />
+	<use x="921" y="848" xlink:href="#csp" />
+
+	<use x="1128" y="532" xlink:href="#csg" />
+	<use x="1059" y="572" xlink:href="#csg" />
+	<use x="990" y="612" xlink:href="#csg" />
+	<use x="921" y="652" xlink:href="#csg" />
+
+	<use x="220" y="1280" xlink:href="#csy" />
+	<use x="220" y="1390" xlink:href="#csy" />
+	<use x="110" y="1280" xlink:href="#csy" />
+	<use x="110" y="1390" xlink:href="#csy" />
+
+	<use x="1280" y="1280" xlink:href="#csp" />
+	<use x="1280" y="1390" xlink:href="#csp" />
+	<use x="1390" y="1280" xlink:href="#csp" />
+	<use x="1390" y="1390" xlink:href="#csp" />
+
+	<use x="1280" y="110" xlink:href="#csr" />
+	<use x="1280" y="220" xlink:href="#csr" />
+	<use x="1390" y="110" xlink:href="#csr" />
+	<use x="1390" y="220" xlink:href="#csr" />
+
+	<use x="110" y="110" xlink:href="#csbl" />
+	<use x="110" y="220" xlink:href="#csbl" />
+	<use x="220" y="110" xlink:href="#csbl" />
+	<use x="220" y="220" xlink:href="#csbl" />
+
+	<use x="110" y="695" xlink:href="#csb" />
+	<use x="110" y="805" xlink:href="#csb" />
+	<use x="220" y="695" xlink:href="#csb" />
+	<use x="220" y="805" xlink:href="#csb" />
+
+	<use x="1280" y="695" xlink:href="#csg" />
+	<use x="1280" y="805" xlink:href="#csg" />
+	<use x="1390" y="695" xlink:href="#csg" />
+	<use x="1390" y="805" xlink:href="#csg" />
+
+	<use xlink:href="#arrow" transform="translate(-384,-395) rotate(30,750,750)" />
+	<use xlink:href="#arrow" transform="translate(150,-530) rotate(90,750,750)" />
+	<use xlink:href="#arrow" transform="translate(534,-135) rotate(150,750,750)" />
+	<use xlink:href="#arrow" transform="translate(384,395) rotate(210,750,750)" />
+	<use xlink:href="#arrow" transform="translate(-150,530) rotate(270,750,750)" />
+	<use xlink:href="#arrow" transform="translate(-534,135) rotate(330,750,750)" />
+
+	<use xlink:href="#ya" transform="translate(-92,528)" />
+	<use xlink:href="#ga" transform="translate(504,-184) rotate(240,750,750)" />
+	<use xlink:href="#ra" transform="translate(92,-528) rotate(180,750,750)" />
+	<use xlink:href="#ba" transform="translate(-504,184) rotate(60,750,750)" />
+	<use xlink:href="#bla" transform="translate(-412,-344) rotate(120,750,750)" />
+	<use xlink:href="#pa" transform="translate(412,344) rotate(300,750,750)" />
+
+	<use xlink:href="#bb" transform="translate(-585,585)" />
+	<use xlink:href="#bb" transform="translate(585,585)" />
+	<use xlink:href="#bb" transform="translate(-585,-585) rotate(180,750,750)" />
+	<use xlink:href="#bb" transform="translate(585,-585) rotate(180,750,750)" />
+	<use xlink:href="#bb" transform="translate(-585,0) rotate(90,750,750)" />
+	<use xlink:href="#bb" transform="translate(585,0) rotate(270,750,750)" />
+</svg>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e8d8b8">
+<title>Mensch ärgere Dich nicht – Online</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <section id="passwordGate" class="password-gate">
+    <div class="password-card">
+      <h1>Spielzugang</h1>
+      <p>Bitte das Spiel-Passwort eingeben.</p>
+      <form id="passwordForm" class="password-form">
+        <label for="accessPassword">Spiel-Passwort</label>
+        <input id="accessPassword" type="password" autocomplete="current-password" required>
+        <button type="submit" class="primary">Spiel öffnen</button>
+      </form>
+      <button id="adminLoginButton" type="button" class="secondary full">Adminbereich</button>
+      <p id="passwordMsg" class="status" aria-live="polite"></p>
+    </div>
+  </section>
+  <section id="setup" class="setup-card">
+    <h1>Mensch ärgere Dich nicht</h1>
+    <p>Online mit 2–6 Spielern · klassische 6-Spieler-Vorlage</p>
+    <div class="setup-grid">
+      <label>Name<input id="name" maxlength="18" autocomplete="nickname" placeholder="Dein Name"></label>
+      <fieldset class="color-picker">
+        <legend>Spielerfarbe</legend>
+        <div id="colorChoices" class="color-choices"></div>
+        <input id="color" type="hidden" value="red">
+      </fieldset>
+    </div>
+    <div class="join-grid">
+      <button id="join" class="primary">Anmelden</button>
+    </div>
+    <p class="status">Bis zu 6 Spieler können sich anmelden. Sobald mindestens 2 Spieler da sind, kann das Spiel gestartet werden. Bereits vergebene Farben werden automatisch grau dargestellt.</p>
+    <p id="setupMsg" class="status" aria-live="polite"></p>
+    <div class="setup-board-preview">
+      <img src="board-template.svg" alt="Spielbrett nach deiner bereitgestellten Vorlage">
+    </div>
+  </section>
+
+  <section id="game" class="hidden">
+    <header class="game-header">
+      <div><strong id="roomLabel">Raum</strong><span id="netLabel" class="net">Verbinde…</span></div>
+      <div id="turnLabel">Lobby</div>
+    </header>
+
+    <div class="game-layout">
+      <aside class="players-panel">
+        <div class="players-head"><h2>Spieler</h2><span id="count">0/6</span></div>
+        <div id="players"></div>
+        <button id="start" class="primary full" disabled>Spiel starten</button>
+        <button id="newGame" class="secondary full hidden">Neues Spiel</button>
+        <p id="lobbyHint" class="hint">Weitere Spieler können beitreten.</p>
+        <p id="gameMsg" class="game-msg" aria-live="polite"></p>
+      </aside>
+
+      <div class="board-section">
+        <section class="dice-panel" aria-label="Würfel">
+          <div class="dice-caption">Würfel</div>
+          <div id="die" class="die">–</div>
+          <div id="diceText" class="dice-text">Lobby – warte auf den Start.</div>
+          <button id="roll" class="primary roll" disabled>Würfeln</button>
+        </section>
+        <div class="board-area">
+          <img id="board" src="board-template.svg" alt="Spielfeld nach der bereitgestellten Vorlage">
+          <div id="tokenLayer" aria-label="Spielfiguren"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

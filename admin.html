@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e8d8b8">
+<title>Admin – Mensch ärgere Dich nicht</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<main class="app password-gate">
+  <section class="password-card">
+    <h1>Adminbereich</h1>
+    <p id="status">Bitte anmelden.</p>
+
+    <form id="loginForm" class="password-form">
+      <label for="email">Admin-E-Mail</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Admin-Passwort</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button class="primary" type="submit">Anmelden</button>
+    </form>
+
+    <div id="panel" class="hidden">
+      <hr>
+      <h2>Spielpasswort ändern</h2>
+      <form id="gameForm" class="password-form">
+        <label for="newGamePassword">Neues Spielpasswort</label>
+        <input id="newGamePassword" type="password" minlength="4" autocomplete="new-password" required>
+        <label for="newGamePassword2">Neues Spielpasswort wiederholen</label>
+        <input id="newGamePassword2" type="password" minlength="4" autocomplete="new-password" required>
+        <button class="primary" type="submit">Spielpasswort speichern</button>
+      </form>
+
+      <hr>
+      <h2>Admin-Passwort ändern</h2>
+      <form id="adminForm" class="password-form">
+        <label for="currentAdminPassword">Aktuelles Admin-Passwort</label>
+        <input id="currentAdminPassword" type="password" autocomplete="current-password" required>
+        <label for="newAdminPassword">Neues Admin-Passwort</label>
+        <input id="newAdminPassword" type="password" minlength="4" autocomplete="new-password" required>
+        <label for="newAdminPassword2">Neues Admin-Passwort wiederholen</label>
+        <input id="newAdminPassword2" type="password" minlength="4" autocomplete="new-password" required>
+        <button class="primary" type="submit">Admin-Passwort speichern</button>
+      </form>
+
+      <button id="logout" class="secondary full" type="button">Abmelden</button>
+      <a href="index.html" style="display:block;text-align:center;margin-top:14px;color:inherit">Zurück zum Spiel</a>
+    </div>
+  </section>
+</main>
+<script src="config.js"></script>
+<script>
+(() => {
+  'use strict';
+  const cfg=window.GAME_CONFIG||{};
+  const sb=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
+  const $=id=>document.getElementById(id);
+  const fn=`${cfg.SUPABASE_URL}/functions/v1/game-access`;
+  const status=m=>$('status').textContent=m;
+  async function call(body){
+    const {data:{session}}=await sb.auth.getSession();
+    const headers={'Content-Type':'application/json','apikey':cfg.SUPABASE_PUBLISHABLE_KEY};
+    if(session?.access_token) headers.Authorization=`Bearer ${session.access_token}`;
+    const r=await fetch(fn,{method:'POST',headers,body:JSON.stringify(body)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.ok) throw new Error(d.error||'Anfrage fehlgeschlagen.');
+    return d;
+  }
+  async function show(){const {data:{session}}=await sb.auth.getSession();if(session){$('loginForm').classList.add('hidden');$('panel').classList.remove('hidden');status('Angemeldet als '+(session.user.email||''));}}
+  $('loginForm').onsubmit=async e=>{e.preventDefault();status('Anmeldung…');const {error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){status(error.message);return}await show()};
+  $('gameForm').onsubmit=async e=>{e.preventDefault();const a=$('newGamePassword').value,b=$('newGamePassword2').value;if(a!==b){status('Die beiden Spielpasswörter stimmen nicht überein.');return}try{await call({action:'change-game-password',newPassword:a});$('gameForm').reset();status('Spielpasswort wurde zentral geändert.');}catch(err){status(err.message)}};
+  $('adminForm').onsubmit=async e=>{e.preventDefault();const old=$('currentAdminPassword').value,a=$('newAdminPassword').value,b=$('newAdminPassword2').value;if(a!==b){status('Die beiden neuen Admin-Passwörter stimmen nicht überein.');return}if(a.length<4){status('Das neue Admin-Passwort muss mindestens 4 Zeichen haben.');return}try{const {error}=await sb.auth.updateUser({password:a,current_password:old});if(error)throw error;$('adminForm').reset();status('Admin-Passwort geändert. Bitte künftig das neue Passwort verwenden.');}catch(err){status(err.message)}};
+  $('logout').onclick=async()=>{await sb.auth.signOut();location.reload()};
+  show();
+})();
+</script>
+</body>
+</html>
