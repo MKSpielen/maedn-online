@@ -8,11 +8,23 @@ const COLORS={
  blue:{name:'Blau',hex:'#0090ff',start:40,home:[[110,110],[110,220],[220,110],[220,220]],goal:[[372,532],[441,572],[510,612],[579,652]]}
 };
 const GAME_CONFIG = window.GAME_CONFIG || {};
+const $ = id => document.getElementById(id);
 const FUNCTION_URL = `${GAME_CONFIG.SUPABASE_URL || ''}/functions/v1/game-access`;
 async function verifyGamePassword(password){
-  const res=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':GAME_CONFIG.SUPABASE_PUBLISHABLE_KEY||''},body:JSON.stringify({action:'verify-game-password',password})});
+  if(!GAME_CONFIG.SUPABASE_URL || GAME_CONFIG.SUPABASE_URL.includes('DEIN-PROJEKT')){
+    throw new Error('Supabase-URL fehlt in config.js.');
+  }
+  if(!GAME_CONFIG.SUPABASE_PUBLISHABLE_KEY || GAME_CONFIG.SUPABASE_PUBLISHABLE_KEY.includes('DEIN_PUBLISHABLE_KEY')){
+    throw new Error('Supabase Publishable Key fehlt in config.js.');
+  }
+  let res;
+  try{
+    res=await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':GAME_CONFIG.SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify({action:'verify-game-password',password})});
+  }catch(err){
+    throw new Error('Supabase ist nicht erreichbar. Bitte Internetverbindung und Function game-access prüfen.');
+  }
   let data={}; try{data=await res.json()}catch{}
-  if(!res.ok || !data.ok) throw new Error(data.error||'Passwortprüfung fehlgeschlagen.');
+  if(!res.ok || !data.ok) throw new Error(data.error||`Passwortprüfung fehlgeschlagen (HTTP ${res.status}).`);
   return true;
 }
 function unlockGame(){
@@ -36,7 +48,7 @@ function setupPasswordGate(){
 }
 setupPasswordGate();
 const TRACK=[[842,222],[842,314],[842,406],[922,452],[1002,498],[1082,452],[1162,406],[1208,486],[1254,566],[1174,612],[1094,658],[1094,750],[1094,842],[1174,888],[1254,934],[1208,1014],[1162,1094],[1082,1048],[1002,1002],[922,1048],[842,1094],[842,1186],[842,1278],[750,1278],[658,1278],[658,1186],[658,1094],[578,1048],[498,1002],[418,1048],[338,1094],[292,1014],[246,934],[326,888],[406,842],[406,750],[406,658],[326,612],[246,566],[292,486],[338,406],[418,452],[498,498],[578,452],[658,406],[658,314],[658,222],[750,222]];
-const KEYS=Object.keys(COLORS), $=id=>document.getElementById(id);
+const KEYS=Object.keys(COLORS);
 const LOBBY_ID='maedn6-global-lobby-v1';
 const S={room:null,host:false,peer:null,conn:null,myId:null,connections:[],players:[],phase:'lobby',turn:0,dice:null,lastDice:null,diceOwner:null,pawns:{},opening:{order:[],index:0,results:{}},houseRolls:0,priorityStart:false,joinPending:false,lobbyKnown:false};
 const colorChoices=$('colorChoices');

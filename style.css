@@ -17,3 +17,5 @@ button:disabled{opacity:.45;cursor:not-allowed}.primary{background:#e3b52e;color
 @media(min-width:821px){.players-panel>#players{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 12px}.players-panel .player-row{min-width:0}.players-panel .full{width:220px}.players-panel .hint,.players-panel .game-msg{margin-bottom:0}}
 
 .password-gate{min-height:88vh;display:grid;place-items:center;padding:20px}.password-card{width:min(100%,430px);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}.password-card h1,.password-card h2{margin-top:0}.password-form{display:grid;gap:8px}.password-form label{font-weight:700}.password-form button{margin-top:6px}.password-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.password-actions button{margin-top:0}
+
+.admin-link{display:block;text-align:center;text-decoration:none;margin-top:10px;}
