@@ -112,8 +112,16 @@ function snapshot(){return{room:S.room,players:S.players,phase:S.phase,turn:S.tu
 function apply(s,reveal=true){
   const oldPawns=S.pawns||{};
   const oldPhase=S.phase;
+  const oldDice=S.dice;
   const newPawns=s.pawns||{};
   S.room=s.room;S.players=s.players||[];S.phase=s.phase||'lobby';S.turn=Number.isInteger(s.turn)?s.turn:0;S.dice=s.dice==null?null:Number(s.dice);S.lastDice=s.lastDice==null?null:Number(s.lastDice);S.diceOwner=s.diceOwner||null;S.pawns=newPawns;S.opening=s.opening||{order:[],index:0,results:{}};S._houseRolls=Number.isInteger(s.houseRolls)?s.houseRolls:0;S.priorityStart=!!s.priorityStart;
+  // Every remote device hears Sound1 when a 6 is rolled while the
+  // rolling player still has at least one pawn in the house.
+  if(oldPhase==='playing'&&S.phase==='playing'&&S.dice===6&&oldDice!==6){
+    const roller=S.players.find(p=>p.id===S.diceOwner);
+    const rollerPawns=roller?(newPawns[roller.id]||[]):[];
+    if(roller&&rollerPawns.some(x=>x===-1))playHouseExitSound();
+  }
   if(oldPhase==='playing'&&S.phase==='playing'){
     for(const p of S.players){
       const before=oldPawns[p.id]||[];
@@ -314,7 +322,9 @@ function legal(id,r){
 }
 function currentRollerId(){if(S.phase==='opening')return S.opening.order[S.opening.index]||null;if(S.phase==='playing')return S.players[S.turn]?.id||null;return null}
 function openingRoll(id){if(S.phase!=='opening'||id!==currentRollerId())return;const r=die();S.opening.results[id]=r;S.dice=r;S.lastDice=r;S.diceOwner=id;S.opening.index++;if(S.opening.index<S.opening.order.length){broadcast();return}const vals=S.opening.order.map(pid=>S.opening.results[pid]);const min=Math.min(...vals);const tied=S.opening.order.filter(pid=>S.opening.results[pid]===min);if(tied.length>1){S.opening.order=tied;S.opening.index=0;S.opening.results={};S.dice=null;S.diceOwner=null;gameMsg('Gleichstand bei der niedrigsten Zahl – nur diese Spieler würfeln erneut.');broadcast();return}S.turn=S.players.findIndex(p=>p.id===tied[0]);S.phase='playing';S.dice=null;S.diceOwner=null;gameMsg((S.players[S.turn]?.name||'Spieler')+' beginnt. Zum Herauskommen ist eine 6 nötig.');broadcast()}
-function roll(id){if(S.phase==='opening'){openingRoll(id);return}if(S.phase!=='playing'||id!==S.players[S.turn]?.id)return;const p=S.players[S.turn];const houseRetry=needsHouseRolls(p.id)&&S.dice!==null&&S.diceOwner===p.id&&S._houseRolls>0;if(S.dice!==null&&!houseRetry)return;const r=die();S.dice=r;S.lastDice=r;S.diceOwner=p.id;const moves=legal(p.id,r);if(moves.length===0){const canTryAgain=needsHouseRolls(p.id)&&r!==6;if(canTryAgain){S._houseRolls=(S._houseRolls||0)+1;if(S._houseRolls<3){gameMsg(p.name+' hat eine '+r+' gewürfelt – keine 6. Noch '+(3-S._houseRolls)+' Versuch'+(3-S._houseRolls===1?'':'e')+'.');broadcast();return}S.dice=null;S.diceOwner=null;S._houseRolls=0;nextTurn();gameMsg(p.name+' hat '+r+' gewürfelt. Keine 6 in drei Versuchen – '+(S.players[S.turn]?.name||'Der nächste Spieler')+' ist am Zug.');broadcast();return}S.dice=null;S.diceOwner=null;S._houseRolls=0;nextTurn();gameMsg(p.name+' kann mit dieser Zahl nicht ziehen.');broadcast();return}S._houseRolls=0;broadcast()}
+function roll(id){if(S.phase==='opening'){openingRoll(id);return}if(S.phase!=='playing'||id!==S.players[S.turn]?.id)return;const p=S.players[S.turn];const houseRetry=needsHouseRolls(p.id)&&S.dice!==null&&S.diceOwner===p.id&&S._houseRolls>0;if(S.dice!==null&&!houseRetry)return;const r=die();S.dice=r;S.lastDice=r;S.diceOwner=p.id;
+  if(r===6 && (S.pawns[p.id]||basePawns()).some(x=>x===-1)) playHouseExitSound();
+  const moves=legal(p.id,r);if(moves.length===0){const canTryAgain=needsHouseRolls(p.id)&&r!==6;if(canTryAgain){S._houseRolls=(S._houseRolls||0)+1;if(S._houseRolls<3){gameMsg(p.name+' hat eine '+r+' gewürfelt – keine 6. Noch '+(3-S._houseRolls)+' Versuch'+(3-S._houseRolls===1?'':'e')+'.');broadcast();return}S.dice=null;S.diceOwner=null;S._houseRolls=0;nextTurn();gameMsg(p.name+' hat '+r+' gewürfelt. Keine 6 in drei Versuchen – '+(S.players[S.turn]?.name||'Der nächste Spieler')+' ist am Zug.');broadcast();return}S.dice=null;S.diceOwner=null;S._houseRolls=0;nextTurn();gameMsg(p.name+' kann mit dieser Zahl nicht ziehen.');broadcast();return}S._houseRolls=0;broadcast()}
 function move(i){
   if(S.phase!=='playing'||S.dice===null)return;
   const p=S.players[S.turn],arr=S.pawns[p.id]||basePawns(),r=S.dice;
@@ -326,7 +336,7 @@ function move(i){
   const leavingHouse=from===-1&&to>=0&&to<48;
   arr[i]=to;S.pawns[p.id]=arr;
   captured.forEach(o=>{S.pawns[o.p.id][o.i]=-1;playCaptureSound(o.p.color)});
-  if(leavingHouse)playHouseExitSound();
+  
   const won=arr.every(x=>x>=48);const extra=r===6&&!won;S.priorityStart=extra&&arr.some(x=>x===-1);S.dice=null;S.diceOwner=null;
   if(won){S.phase='finished';gameMsg(p.name+' hat alle 4 Figuren im Ziel und gewinnt!');playWinSound();broadcast();return}
   if(extra){gameMsg(p.name+' hat eine 6 gewürfelt und darf erneut würfeln.')}else{nextTurn();gameMsg(S.players[S.turn]?.name+' ist am Zug.')}broadcast();
