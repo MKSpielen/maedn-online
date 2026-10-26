@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e8d8b8">
+<title>Admin – Mensch ärgere Dich nicht</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<main class="app password-gate">
+<section class="password-card">
+<h1>Adminbereich</h1>
+<p id="status" role="status" aria-live="polite">Bitte anmelden.</p>
+<form id="loginForm" class="password-form">
+<label for="email">Admin-E-Mail</label>
+<input id="email" type="email" autocomplete="username" required>
+<label for="password">Admin-Passwort</label>
+<input id="password" type="password" autocomplete="current-password" required>
+<button class="primary" type="submit">Anmelden</button>
+<button id="forgotBtn" class="secondary full" type="button">Passwort vergessen?</button>
+</form>
+<div id="recoveryPanel" class="hidden">
+<hr><h2>Neues Admin-Passwort</h2>
+<p>Gib dein neues Passwort zweimal ein.</p>
+<form id="recoveryForm" class="password-form">
+<label for="recoveryPassword">Neues Passwort</label>
+<input id="recoveryPassword" type="password" minlength="6" autocomplete="new-password" required>
+<label for="recoveryPassword2">Neues Passwort wiederholen</label>
+<input id="recoveryPassword2" type="password" minlength="6" autocomplete="new-password" required>
+<button class="primary" type="submit">Neues Passwort speichern</button>
+</form>
+</div>
+<div id="panel" class="hidden">
+<hr><h2>Spielpasswort ändern</h2>
+<form id="gameForm" class="password-form">
+<label for="newGamePassword">Neues Spielpasswort</label>
+<input id="newGamePassword" type="password" minlength="4" autocomplete="new-password" required>
+<label for="newGamePassword2">Neues Spielpasswort wiederholen</label>
+<input id="newGamePassword2" type="password" minlength="4" autocomplete="new-password" required>
+<button class="primary" type="submit">Spielpasswort speichern</button>
+</form>
+<hr><h2>Admin-Passwort ändern</h2>
+<form id="adminForm" class="password-form">
+<label for="currentAdminPassword">Aktuelles Admin-Passwort</label>
+<input id="currentAdminPassword" type="password" autocomplete="current-password" required>
+<label for="newAdminPassword">Neues Admin-Passwort</label>
+<input id="newAdminPassword" type="password" minlength="6" autocomplete="new-password" required>
+<label for="newAdminPassword2">Neues Admin-Passwort wiederholen</label>
+<input id="newAdminPassword2" type="password" minlength="6" autocomplete="new-password" required>
+<button class="primary" type="submit">Admin-Passwort speichern</button>
+</form>
+<button id="logout" class="secondary full" type="button">Abmelden</button>
+<a href="index.html" style="display:block;text-align:center;margin-top:14px;color:inherit">Zurück zum Spiel</a>
+</div>
+</section>
+</main>
+<script src="config.js"></script>
+<script>
+(() => {
+'use strict';
+const cfg = window.GAME_CONFIG || {};
+const $ = id => document.getElementById(id);
+const status = message => $('status').textContent = message;
+if (!cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY) {
+  status('Fehler: Supabase-Konfiguration fehlt in config.js.');
+  return;
+}
+const sb = supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
+const fn = `${cfg.SUPABASE_URL}/functions/v1/game-access`;
+let recoveryMode = false;
+
+async function call(body) {
+  const { data: { session } } = await sb.auth.getSession();
+  const headers = {'Content-Type':'application/json','apikey':cfg.SUPABASE_PUBLISHABLE_KEY};
+  if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
+  const response = await fetch(fn, {method:'POST',headers,body:JSON.stringify(body)});
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.ok) throw new Error(data.error || 'Anfrage fehlgeschlagen.');
+  return data;
+}
+function showRecovery() {
+  recoveryMode = true;
+  $('loginForm').classList.add('hidden');
+  $('panel').classList.add('hidden');
+  $('recoveryPanel').classList.remove('hidden');
+  status('Wiederherstellung aktiv. Lege jetzt dein neues Passwort fest.');
+}
+async function showNormalPanel() {
+  if (recoveryMode) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    $('loginForm').classList.add('hidden');
+    $('recoveryPanel').classList.add('hidden');
+    $('panel').classList.remove('hidden');
+    status('Angemeldet als ' + (session.user.email || ''));
+  }
+}
+// Supabase kann mit einem Fragment (Implicit Flow) oder ?code=... (PKCE) zurückkehren.
+sb.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') showRecovery();
+});
+
+async function checkRecoveryReturn() {
+  const url = new URL(window.location.href);
+  const hash = new URLSearchParams(url.hash.replace(/^#/, ''));
+  const recoveryMarker =
+    hash.get('type') === 'recovery' ||
+    url.searchParams.get('type') === 'recovery' ||
+    url.searchParams.has('code') ||
+    (hash.has('access_token') && hash.has('refresh_token'));
+
+  if (!recoveryMarker) {
+    await showNormalPanel();
+    return;
+  }
+
+  status('Wiederherstellungslink wird geprüft …');
+  for (let i = 0; i < 12; i++) {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error) {
+      status('Link konnte nicht geprüft werden. Bitte fordere eine neue E-Mail an.');
+      return;
+    }
+    if (session) {
+      showRecovery();
+      return;
+    }
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+  status('Der Wiederherstellungslink ist ungültig oder abgelaufen. Bitte fordere eine neue E-Mail an.');
+}
+
+checkRecoveryReturn().catch(error => {
+  status('Wiederherstellung fehlgeschlagen: ' + error.message);
+});
+$('forgotBtn').addEventListener('click', async () => {
+  const email = $('email').value.trim();
+  if (!email) {
+    status('Bitte zuerst deine Admin-E-Mail eingeben.');
+    $('email').focus();
+    return;
+  }
+  status('Wiederherstellungs-E-Mail wird angefordert …');
+  try {
+    const redirectTo = 'https://mkspielen.github.io/maedn-online/admin.html';
+    const { error } = await sb.auth.resetPasswordForEmail(email, {redirectTo});
+    if (error) throw error;
+    status('Falls die Adresse zu einem Konto gehört, wurde eine E-Mail angefordert. Bitte auch den Spam-Ordner prüfen.');
+  } catch (error) {
+    status('Fehler: ' + error.message);
+  }
+});
+$('recoveryForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const password = $('recoveryPassword').value;
+  const password2 = $('recoveryPassword2').value;
+  if (password !== password2) { status('Die beiden Passwörter stimmen nicht überein.'); return; }
+  if (password.length < 6) { status('Das Passwort muss mindestens 6 Zeichen haben.'); return; }
+  status('Neues Passwort wird gespeichert …');
+  try {
+    const { error } = await sb.auth.updateUser({password});
+    if (error) throw error;
+    recoveryMode = false;
+    $('recoveryForm').reset();
+    $('recoveryPanel').classList.add('hidden');
+    $('loginForm').classList.remove('hidden');
+    $('panel').classList.add('hidden');
+    await sb.auth.signOut();
+    status('Passwort erfolgreich geändert. Du kannst dich jetzt neu anmelden.');
+  } catch (error) {
+    status('Passwort konnte nicht geändert werden: ' + error.message);
+  }
+});
+$('loginForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  status('Anmeldung …');
+  const { error } = await sb.auth.signInWithPassword({
+    email:$('email').value.trim(), password:$('password').value
+  });
+  if (error) { status('Anmeldung fehlgeschlagen: ' + error.message); return; }
+  await showNormalPanel();
+});
+$('gameForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const password = $('newGamePassword').value;
+  if (password !== $('newGamePassword2').value) {
+    status('Die beiden Spielpasswörter stimmen nicht überein.'); return;
+  }
+  try {
+    await call({action:'change-game-password',newPassword:password});
+    $('gameForm').reset();
+    status('Spielpasswort wurde zentral geändert.');
+  } catch (error) { status('Fehler: ' + error.message); }
+});
+$('adminForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const oldPassword = $('currentAdminPassword').value;
+  const password = $('newAdminPassword').value;
+  if (password !== $('newAdminPassword2').value) {
+    status('Die beiden neuen Admin-Passwörter stimmen nicht überein.'); return;
+  }
+  if (password.length < 6) { status('Das neue Admin-Passwort muss mindestens 6 Zeichen haben.'); return; }
+  try {
+    const { error } = await sb.auth.updateUser({password,current_password:oldPassword});
+    if (error) throw error;
+    $('adminForm').reset();
+    status('Admin-Passwort geändert. Bitte künftig das neue Passwort verwenden.');
+  } catch (error) { status('Fehler: ' + error.message); }
+});
+$('logout').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  location.reload();
+});
+})();
+</script>
+</body>
+</html>
