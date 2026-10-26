@@ -97,8 +97,43 @@ async function showNormalPanel() {
     status('Angemeldet als ' + (session.user.email || ''));
   }
 }
+// Supabase kann mit einem Fragment (Implicit Flow) oder ?code=... (PKCE) zurückkehren.
 sb.auth.onAuthStateChange((event) => {
   if (event === 'PASSWORD_RECOVERY') showRecovery();
+});
+
+async function checkRecoveryReturn() {
+  const url = new URL(window.location.href);
+  const hash = new URLSearchParams(url.hash.replace(/^#/, ''));
+  const recoveryMarker =
+    hash.get('type') === 'recovery' ||
+    url.searchParams.get('type') === 'recovery' ||
+    url.searchParams.has('code') ||
+    (hash.has('access_token') && hash.has('refresh_token'));
+
+  if (!recoveryMarker) {
+    await showNormalPanel();
+    return;
+  }
+
+  status('Wiederherstellungslink wird geprüft …');
+  for (let i = 0; i < 12; i++) {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error) {
+      status('Link konnte nicht geprüft werden. Bitte fordere eine neue E-Mail an.');
+      return;
+    }
+    if (session) {
+      showRecovery();
+      return;
+    }
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+  status('Der Wiederherstellungslink ist ungültig oder abgelaufen. Bitte fordere eine neue E-Mail an.');
+}
+
+checkRecoveryReturn().catch(error => {
+  status('Wiederherstellung fehlgeschlagen: ' + error.message);
 });
 $('forgotBtn').addEventListener('click', async () => {
   const email = $('email').value.trim();
@@ -178,7 +213,6 @@ $('logout').addEventListener('click', async () => {
   await sb.auth.signOut();
   location.reload();
 });
-showNormalPanel();
 })();
 </script>
 </body>
